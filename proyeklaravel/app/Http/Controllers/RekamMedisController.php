@@ -9,30 +9,65 @@ class RekamMedisController extends Controller
 {
     public function index()
     {
-        return response()->json(RekamMedis::with(['pet', 'dokter', 'detailRekamMedis'])->get());
+        // Ambil semua data dengan relasi pet, dokter, dan detail rekam medis
+        $rekamMedis = RekamMedis::with(['pet', 'dokter', 'detailRekamMedis'])->get();
+
+        // Kirim ke view
+        return view('admin.rekammedis.index', compact('rekamMedis'));
+    }
+
+    public function create()
+    {
+        //
     }
 
     public function store(Request $request)
     {
-        $rekam = RekamMedis::create($request->all());
-        return response()->json($rekam, 201);
+        $validated = $request->validate([
+            'idpet' => 'required|exists:pet,idpet',
+            'dokter_pemeriksa' => 'required|exists:role_user,idrole_user',
+            'tanggal_periksa' => 'required|date',
+            'diagnosa' => 'nullable|string',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        RekamMedis::create($validated);
+        return redirect()->route('admin.rekammedis.index')->with('success', 'Rekam medis berhasil ditambahkan');
     }
 
     public function show($id)
     {
-        return response()->json(RekamMedis::with(['pet', 'dokter', 'detailRekamMedis'])->findOrFail($id));
+        $rekamMedis = RekamMedis::with(['pet', 'dokter', 'detailRekamMedis'])->findOrFail($id);
+        return view('admin.rekammedis.show', compact('rekamMedis'));
+    }
+
+    public function edit($id)
+    {
+        $rekamMedis = RekamMedis::findOrFail($id);
+        return view('admin.rekammedis.edit', compact('rekamMedis'));
     }
 
     public function update(Request $request, $id)
     {
-        $rekam = RekamMedis::findOrFail($id);
-        $rekam->update($request->all());
-        return response()->json($rekam);
+        $validated = $request->validate([
+            'idpet' => 'required|exists:pet,idpet',
+            'dokter_pemeriksa' => 'required|exists:role_user,idrole_user',
+            'tanggal_periksa' => 'required|date',
+            'diagnosa' => 'nullable|string',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->update($validated);
+
+        return redirect()->route('admin.rekammedis.index')->with('success', 'Rekam medis berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        RekamMedis::destroy($id);
-        return response()->json(['message' => 'Rekam Medis deleted']);
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->delete();
+
+        return redirect()->route('admin.rekammedis.index')->with('success', 'Rekam medis berhasil dihapus');
     }
 }

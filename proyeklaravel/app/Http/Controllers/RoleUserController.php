@@ -9,30 +9,61 @@ class RoleUserController extends Controller
 {
     public function index()
     {
-        return response()->json(RoleUser::with(['user', 'role'])->get());
+        // Ambil semua data role_user beserta relasi user dan role
+        $roleUsers = RoleUser::with(['user', 'role'])->get();
+
+        // Kirim ke view
+        return view('admin.roleuser.index', compact('roleUsers'));
+    }
+
+    public function create()
+    {
+        //
     }
 
     public function store(Request $request)
     {
-        $roleUser = RoleUser::create($request->all());
-        return response()->json($roleUser, 201);
+        $validated = $request->validate([
+            'iduser' => 'required|exists:user,iduser',
+            'idrole' => 'required|exists:role,idrole',
+            'status' => 'required|string|max:50',
+        ]);
+
+        RoleUser::create($validated);
+        return redirect()->route('admin.roleuser.index')->with('success', 'Role User berhasil ditambahkan');
     }
 
     public function show($id)
     {
-        return response()->json(RoleUser::with(['user', 'role'])->findOrFail($id));
+        $roleUser = RoleUser::with(['user', 'role'])->findOrFail($id);
+        return view('admin.roleuser.show', compact('roleUser'));
+    }
+
+    public function edit($id)
+    {
+        $roleUser = RoleUser::findOrFail($id);
+        return view('admin.roleuser.edit', compact('roleUser'));
     }
 
     public function update(Request $request, $id)
     {
+        $validated = $request->validate([
+            'iduser' => 'required|exists:user,iduser',
+            'idrole' => 'required|exists:role,idrole',
+            'status' => 'required|string|max:50',
+        ]);
+
         $roleUser = RoleUser::findOrFail($id);
-        $roleUser->update($request->all());
-        return response()->json($roleUser);
+        $roleUser->update($validated);
+
+        return redirect()->route('admin.roleuser.index')->with('success', 'Role User berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        RoleUser::destroy($id);
-        return response()->json(['message' => 'RoleUser deleted']);
+        $roleUser = RoleUser::findOrFail($id);
+        $roleUser->delete();
+
+        return redirect()->route('admin.roleuser.index')->with('success', 'Role User berhasil dihapus');
     }
 }

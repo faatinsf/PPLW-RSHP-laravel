@@ -9,30 +9,42 @@ class PemilikController extends Controller
 {
     public function index()
     {
-        return response()->json(Pemilik::with(['user', 'pets'])->get());
+        // Ambil semua data pemilik + relasi user & pets,
+        // tapi paksa relasi user-nya pakai iduser, bukan id
+        $pemilik = Pemilik::all()->map(function ($item) {
+            $item->user = \App\Models\User::where('iduser', $item->iduser)->first();
+            $item->pets = $item->pets; // biar relasi pets tetap ikut
+            return $item;
+        });
+
+        return view('admin.pemilik.index', compact('pemilik'));
     }
 
     public function store(Request $request)
     {
-        $pemilik = Pemilik::create($request->all());
-        return response()->json($pemilik, 201);
+        Pemilik::create($request->all());
+        return redirect()->route('admin.pemilik.index')->with('success', 'Data pemilik berhasil ditambahkan!');
     }
 
-    public function show($id)
-    {
-        return response()->json(Pemilik::with(['user', 'pets'])->findOrFail($id));
-    }
+    // public function show($id)
+    // {
+    //     $pemilik = Pemilik::findOrFail($id);
+    //     $pemilik->user = \App\Models\User::where('iduser', $pemilik->iduser)->first();
+    //     $pemilik->pets = $pemilik->pets;
 
-    public function update(Request $request, $id)
+    //     return view('admin.pemilik.show', compact('pemilik'));
+    // }
+
+     public function update(Request $request, $id)
     {
         $pemilik = Pemilik::findOrFail($id);
         $pemilik->update($request->all());
-        return response()->json($pemilik);
+        return redirect()->route('admin.pemilik.index')->with('success', 'Data pemilik berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
         Pemilik::destroy($id);
-        return response()->json(['message' => 'Pemilik deleted']);
+        return redirect()->route('admin.pemilik.index')->with('success', 'Data pemilik berhasil dihapus!');
     }
 }

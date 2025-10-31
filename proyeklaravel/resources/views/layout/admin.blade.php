@@ -147,6 +147,7 @@
         <a href="{{ route('roleuser.index') }}">⚙️ Role User</a>
         <a href="{{ route('pemilik.index') }}">🐕 Pemilik Hewan</a>
         <a href="{{ route('pet.index') }}">🐶 Data Hewan</a>
+        <a href="{{ route('rashewan.index') }}">🐾 Ras Hewan</a>
         <a href="{{ route('jenishewan.index') }}">🐾 Jenis Hewan</a>
         <a href="{{ route('rekammedis.index') }}">📋 Rekam Medis</a>
         <a href="{{ route('detailrekammedis.index') }}">🩺 Detail Rekam Medis</a>

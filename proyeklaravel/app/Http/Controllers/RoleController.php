@@ -7,32 +7,55 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    // 🧩 Tampilkan semua role beserta user yang memiliki role tersebut
     public function index()
     {
-        return response()->json(Role::all());
+        // Ambil semua role + relasi user-nya
+        $roles = Role::with(['roleUsers.user'])->get();
+
+        // Tampilkan ke view role/index.blade.php
+        return view('admin.role.index', compact('roles'));
     }
 
+    // 🧩 Simpan role baru dari form
     public function store(Request $request)
     {
-        $role = Role::create($request->all());
-        return response()->json($role, 201);
+        $request->validate([
+            'nama_role' => 'required|string|max:255|unique:role,nama_role',
+        ]);
+
+        Role::create(['nama_role' => $request->nama_role]);
+
+        return redirect()->route('admin.role.index')->with('success', 'Role berhasil ditambahkan!');
     }
 
+    // 🧩 Tampilkan detail role
     public function show($id)
     {
-        return response()->json(Role::with('roleUsers')->findOrFail($id));
+        $role = Role::with(['roleUsers.user'])->findOrFail($id);
+        return view('role.show', compact('role'));
     }
 
+    // 🧩 Update role
     public function update(Request $request, $id)
     {
         $role = Role::findOrFail($id);
-        $role->update($request->all());
-        return response()->json($role);
+
+        $request->validate([
+            'nama_role' => 'required|string|max:255|unique:role,nama_role,' . $role->idrole . ',idrole',
+        ]);
+
+        $role->update(['nama_role' => $request->nama_role]);
+
+        return redirect()->route('admin.role.index')->with('success', 'Role berhasil diperbarui!');
     }
 
+    // 🧩 Hapus role
     public function destroy($id)
     {
-        Role::destroy($id);
-        return response()->json(['message' => 'Role deleted']);
+        $role = Role::findOrFail($id);
+        $role->delete();
+
+        return redirect()->route('admin.role.index')->with('success', 'Role berhasil dihapus!');
     }
 }
