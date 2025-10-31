@@ -1,14 +1,39 @@
-@extends('layout.main')
-
-@section('title', 'Home')
+@extends('layouts.app')
 
 @section('content')
-<section id="home">
-  <h2>Home</h2>
-  <p><b>RSHP Universitas Airlangga</b> adalah fasilitas pelayanan kesehatan hewan yang juga berfungsi sebagai pusat pendidikan kedokteran hewan. Kami melayani hewan kecil, hewan besar, dan satwa liar.</p>
-  <img src="{{ asset('image/gambarrshp.jpg') }}" alt="Gedung RSHP Universitas Airlangga">
-  <p>Sumber informasi resmi dapat dilihat di 
-    <a href="https://rshp.unair.ac.id" target="_blank">Website RSHP UNAIR</a>.
-  </p>
-</section>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <!-- ambil sessi yang sudah disimpan saat login -->
+                <div class="card-header">{{ __('Dashboard') }} – {{ session('user_name') }}</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    {{ __('You are logged in! ') }} {{ session('user_role_name') }}
+
+                    <div class="mt-4">
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <a href="{{ route('admin.jenis-hewan.index') }}" class="btn btn-primary btn-block">
+                                    <i class="fas fa-paw"></i> Jenis Hewan
+                                </a>
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <a href="{{ route('admin.pemilik.index') }}" class="btn btn-success btn-block">
+                                    <i class="fas fa-users"></i> Pemilik
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
