@@ -4,13 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
-
-class isResepsionis
+class isDokter
 {
-    
     public function handle(Request $request, Closure $next): Response
     {
 
@@ -19,7 +17,7 @@ class isResepsionis
         $userRole = session('user_role');
 
         // Jika user terautentikasi tapi role  1, return 403
-        if ($userRole === 4) {
+        if ($userRole === 2) {
 
             return $next($request);
         } else {

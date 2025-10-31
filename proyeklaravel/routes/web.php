@@ -12,10 +12,13 @@ use App\Http\Controllers\RasHewanController;
 use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\JenisHewanController;
 use App\Http\Controllers\RekamMedisController;
+use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\KategoriKlinisController;
+use App\Http\Controllers\DashboardDokterController;
+use App\Http\Controllers\DashboardPerawatController;
 use App\Http\Controllers\DetailRekamMedisController;
 use App\Http\Controllers\KodeTindakanTerapiController;
-use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\DashboardResepsionisController;
 
 // Halaman umum
 Route::get('/', [HomeController::class, 'home'])->name('home');
@@ -49,6 +52,25 @@ Route::middleware('isAdministrator')->group(function () {
     Route::get('/roleuser', [RoleUserController::class, 'index'])->name('roleuser.index');
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
 
-  
+
+    });
+});
+
+
+Route::middleware( 'isDokter')->group(function () {
+    Route::prefix('dokter')->group(function () {
+    Route::get('/dashboard', [DashboardDokterController::class, 'index'])->name('dokter.dashboard');
+    });
+});
+
+Route::middleware( 'isPerawat')->group(function () {
+    Route::prefix('perawat')->group(function () {
+    Route::get('/dashboard', [DashboardPerawatController::class, 'index'])->name('perawat.dashboard');
+    });
+});
+
+Route::middleware( 'isResepsionis')->group(function () {
+    Route::prefix('resepsionis')->group(function () {
+    Route::get('/dashboard', [DashboardResepsionisController::class, 'index'])->name('resepsionis.dashboard');
     });
 });

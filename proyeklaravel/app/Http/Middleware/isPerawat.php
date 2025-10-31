@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-
-class isResepsionis
+class isPerawat
 {
-    
     public function handle(Request $request, Closure $next): Response
     {
 
@@ -19,7 +17,7 @@ class isResepsionis
         $userRole = session('user_role');
 
         // Jika user terautentikasi tapi role  1, return 403
-        if ($userRole === 4) {
+        if ($userRole === 3) {
 
             return $next($request);
         } else {
