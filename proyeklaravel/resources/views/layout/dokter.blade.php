@@ -7,7 +7,10 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
+
+    
     @stack('styles')
 
     <style>
@@ -48,17 +51,13 @@
                 </a>
             </li>
 
-            <li>
-                <a href="{{ route('dokter.rekam-medis.index') }}"
-                   class="{{ request()->routeIs('dokter.rekam-medis.*') ? 'active' : '' }}">
-                    <i class="bi bi-file-medical"></i> Rekam Medis
-                </a>
-            </li>
+            
 
             <li>
                 <a href="{{ route('dokter.pet.index') }}"
                    class="{{ request()->routeIs('dokter.pet.*') ? 'active' : '' }}">
-                    <i class="bi bi-paw"></i> Data Hewan
+                    <i class="bi bi-emoji-smile"></i> Data Hewan
+
                 </a>
             </li>
 
@@ -67,6 +66,13 @@
                    class="{{ request()->routeIs('dokter.pemilik.*') ? 'active' : '' }}">
                     <i class="bi bi-people"></i> Data Pemilik
                 </a>
+            </li>
+
+            <li>
+               <a href="{{ route('dokter.rekam-medis.index') }}"
+                  class="{{ request()->routeIs('dokter.rekam-medis.index') || request()->routeIs('dokter.rekam-medis.*') ? 'active' : '' }}">
+                   <i class="bi bi-file-medical"></i> Rekam Medis
+               </a>
             </li>
         </ul>
 

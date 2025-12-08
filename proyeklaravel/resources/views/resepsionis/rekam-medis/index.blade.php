@@ -57,7 +57,7 @@
                         <i class="bi bi-search me-1"></i> Cari
                     </button>
                     <a href="{{ route('resepsionis.rekam-medis.index') }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-clockwise"></i>
+                        <i class="bi bi-arrow-clockwise"></i> ↻
                     </a>
                 </div>
             </form>
@@ -113,7 +113,7 @@
                             <td class="text-center">
                                 <a href="{{ route('resepsionis.rekam-medis.show', $rm->idrekam_medis) }}" 
                                    class="btn btn-sm btn-info" title="Lihat Detail">
-                                    <i class="bi bi-eye"></i>
+                                    <i class="bi bi-eye"></i> Show
                                 </a>
                             </td>
                         </tr>

@@ -98,29 +98,28 @@ Route::middleware('isDokter')
 
         Route::get('/dashboard', [DashboardDokterController::class, 'index'])
             ->name('dashboard');
-
-        // Rekam Medis
-        Route::resource('rekam-medis', DokterRekamMedis::class);
-
-        Route::get('rekam-medis/create/{appointmentId}', 
-            [DokterRekamMedis::class, 'create']
-        )->name('rekam-medis.create-from-appointment');
-
-        // Pet
-        Route::get('pet', [DokterPet::class, 'index'])->name('pet.index');
-        Route::get('pet/{id}', [DokterPet::class, 'show'])->name('pet.show');
-
-        // Pemilik
-        Route::get('pemilik', [DokterPemilik::class, 'index'])->name('pemilik.index');
-        Route::get('pemilik/{id}', [DokterPemilik::class, 'show'])->name('pemilik.show');
-});
-
-
-// PERAWAT ROUTES
-Route::middleware('isPerawat')->group(function () {
-    Route::prefix('perawat')->group(function () {
-        Route::get('/dashboard', [DashboardPerawatController::class, 'index'])->name('perawat.dashboard');
-    });
+    
+    // Rekam Medis Management (Full CRUD)
+    Route::get('/rekam-medis', [App\Http\Controllers\Dokter\RekamMedisController::class, 'index'])
+        ->name('rekam-medis.index');
+    Route::get('/rekam-medis/{id}', [App\Http\Controllers\Dokter\RekamMedisController::class, 'show'])
+        ->name('rekam-medis.show');
+    Route::get('/rekam-medis/{id}/edit', [App\Http\Controllers\Dokter\RekamMedisController::class, 'edit'])
+        ->name('rekam-medis.edit');
+    Route::put('/rekam-medis/{id}', [App\Http\Controllers\Dokter\RekamMedisController::class, 'update'])
+        ->name('rekam-medis.update');
+    
+    // Pet Management (READ ONLY)
+    Route::get('/pet', [App\Http\Controllers\Dokter\PetController::class, 'index'])
+        ->name('pet.index');
+    Route::get('/pet/{id}', [App\Http\Controllers\Dokter\PetController::class, 'show'])
+        ->name('pet.show');
+    
+    // Pemilik Management (READ ONLY)
+    Route::get('/pemilik', [App\Http\Controllers\Dokter\PemilikController::class, 'index'])
+        ->name('pemilik.index');
+    Route::get('/pemilik/{id}', [App\Http\Controllers\Dokter\PemilikController::class, 'show'])
+        ->name('pemilik.show');
 });
 
 // RESEPSIONIS ROUTES
@@ -174,9 +173,9 @@ Route::middleware('isResepsionis')->prefix('resepsionis')->name('resepsionis.')-
     
     // Rekam Medis (READ ONLY)
     Route::resource('rekammedis', ResepsionisRekamMedisController::class);
-    Route::get('rekam-medis', [ResepsionisRekamMedis::class, 'index'])
+    Route::get('rekam-medis', [ResepsionisRekamMedisController::class, 'index'])
         ->name('rekam-medis.index');
-    Route::get('rekam-medis/{id}', [ResepsionisRekamMedis::class, 'show'])
+    Route::get('rekam-medis/{id}', [ResepsionisRekamMedisController::class, 'show'])
         ->name('rekam-medis.show');
         
     // Transaksi Management
