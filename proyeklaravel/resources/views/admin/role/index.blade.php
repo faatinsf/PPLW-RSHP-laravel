@@ -27,7 +27,7 @@
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
                         <td>{{ $role->nama_role }}</td>
-                        <td class="text-center">{{ $role->roleUsers->count() }}</td>
+                        <td class="text-center">{{ $role->jumlah_user }}</td>
                       
                         <td class="text-center">
                             <button class="btn btn-sm btn-warning">

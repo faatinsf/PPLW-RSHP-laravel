@@ -1,61 +1,109 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Role;
+        
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
-{
-    // 🧩 Tampilkan semua role beserta user yang memiliki role tersebut
+{   
     public function index()
-    {
-        // Ambil semua role + relasi user-nya
-        $roles = Role::with(['roleUsers.user'])->get();
+{
+    $roles = DB::table('role')
+        ->leftJoin('role_user', 'role.idrole', '=', 'role_user.idrole')
+        ->leftJoin('user', 'role_user.iduser', '=', 'user.iduser')
+        ->select(
+            'role.*',
+            DB::raw('COUNT(user.iduser) as jumlah_user')
+        )
+        ->groupBy('role.idrole')
+        ->get();
 
-        // Tampilkan ke view role/index.blade.php
-        return view('admin.role.index', compact('roles'));
+    return view('admin.role.index', compact('roles'));
+}
+
+
+
+    public function create()
+    {
+        return view('admin.role.create');
     }
 
-    // 🧩 Simpan role baru dari form
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_role' => 'required|string|max:255|unique:role,nama_role',
-        ]);
-
-        Role::create(['nama_role' => $request->nama_role]);
-
-        return redirect()->route('admin.role.index')->with('success', 'Role berhasil ditambahkan!');
+        $validated = $this->validateRole($request);
+        $this->createRole($validated);
+        
+        return redirect()->route('role.index')
+                         ->with('success', 'Data role berhasil ditambahkan!');
     }
 
-    // 🧩 Tampilkan detail role
-    public function show($id)
+    public function edit($id)
     {
-        $role = Role::with(['roleUsers.user'])->findOrFail($id);
-        return view('role.show', compact('role'));
+        $role = DB::table('role')->where('idrole', $id)->first();
+        return view('admin.role.edit', compact('role'));
     }
 
-    // 🧩 Update role
-    public function update(Request $request, $id)
+     public function update(Request $request, $id)
     {
-        $role = Role::findOrFail($id);
-
-        $request->validate([
-            'nama_role' => 'required|string|max:255|unique:role,nama_role,' . $role->idrole . ',idrole',
-        ]);
-
-        $role->update(['nama_role' => $request->nama_role]);
-
-        return redirect()->route('admin.role.index')->with('success', 'Role berhasil diperbarui!');
+        $validated = $this->validateRoleUpdate($request, $id);
+        $this->updateRole($id, $validated);
+        
+        return redirect()->route('role.index')
+                         ->with('success', 'Data role berhasil diupdate!');
     }
-
-    // 🧩 Hapus role
+    
     public function destroy($id)
     {
-        $role = Role::findOrFail($id);
-        $role->delete();
+        try {
+            DB::table('role')->where('idrole', $id)->delete();
+            return redirect()->route('role.index')
+                             ->with('success', 'Data role berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->route('role.index')
+                             ->with('error', 'Gagal menghapus data!');
+        }
+    }
 
-        return redirect()->route('admin.role.index')->with('success', 'Role berhasil dihapus!');
+    private function validateRole($request)
+    {
+        return $request->validate([
+            'nama_role' => 'required|string|max:50|unique:role,nama_role',
+            'keterangan' => 'nullable|string|max:255'
+        ]);
+    }
+
+    private function validateRoleUpdate($request, $id)
+    {
+        return $request->validate([
+            'nama_role' => 'required|string|max:50|unique:role,nama_role,' . $id,
+            'keterangan' => 'nullable|string|max:255'
+        ]);
+    }
+
+    private function formatNamaRole($nama)
+    {
+        return ucwords(strtolower($nama));
+    }
+
+    private function createRole($data)
+    {
+        DB::table('role')->insert([
+            'nama_role' => $this->formatNamaRole($data['nama_role']),
+            'keterangan' => $data['keterangan'] ?? null,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+    }
+
+    private function updateRole($id, $data)
+    {
+        DB::table('role')
+            ->where('idrole', $id)
+            ->update([
+                'nama_role' => $this->formatNamaRole($data['nama_role']),
+                'keterangan' => $data['keterangan'] ?? null,
+                'updated_at' => now()
+            ]);
     }
 }

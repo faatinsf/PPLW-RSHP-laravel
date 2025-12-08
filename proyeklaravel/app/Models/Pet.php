@@ -14,8 +14,8 @@ class Pet extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nama',
-        'tanggal_lahir',
+        'nama_pet',
+        'tgl_lahir',
         'warna_tanda',
         'jenis_kelamin',
         'idpemilik',

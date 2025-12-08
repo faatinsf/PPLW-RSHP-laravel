@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\DashboardDokterController;
+use App\Models\RekamMedis;
+use App\Models\Pet;
+use App\Models\Pemilik;
+use App\Models\KodeTindakanTerapi;
 
 class DashboardDokterController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('dokter.dashboard');
+        $rekamCount = RekamMedis::count();
+        $petCount = Pet::count();
+        $pemilikCount = Pemilik::count();
+        $terapiCount = KodeTindakanTerapi::count();
+
+        return view('dokter.dashboard', compact('rekamCount', 'petCount', 'pemilikCount', 'terapiCount'));
     }
 }

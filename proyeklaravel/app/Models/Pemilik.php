@@ -19,13 +19,15 @@ class Pemilik extends Model
         'iduser',
     ];
 
+    // Relasi ke tabel user
     public function user()
     {
-        return $this->belongsTo(User::class, 'iduser');
+        return $this->belongsTo(User::class, 'iduser', 'iduser');
     }
 
+    // Relasi ke tabel pet
     public function pets()
     {
-        return $this->hasMany(Pet::class, 'idpemilik');
+        return $this->hasMany(Pet::class, 'idpemilik', 'idpemilik');
     }
 }
