@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MineController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PemilikController;
@@ -15,15 +16,16 @@ use App\Http\Controllers\RekamMedisController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\KategoriKlinisController;
 use App\Http\Controllers\DashboardDokterController;
-use App\Http\Controllers\Dokter\RekamMedisController as DokterRekamMedis;
-use App\Http\Controllers\Dokter\PetController as DokterPet;
-use App\Http\Controllers\Dokter\PemilikController as DokterPemilik;
+use App\Http\Controllers\DashboardPemilikController;
 use App\Http\Controllers\DashboardPerawatController;
 use App\Http\Controllers\DetailRekamMedisController;
 use App\Http\Controllers\KodeTindakanTerapiController;
 use App\Http\Controllers\DashboardResepsionisController;
-use App\Http\Controllers\Resepsionis\AppointmentController;
 use App\Http\Controllers\Resepsionis\TransaksiController;
+use App\Http\Controllers\Dokter\PetController as DokterPet;
+use App\Http\Controllers\Resepsionis\AppointmentController;
+use App\Http\Controllers\Dokter\PemilikController as DokterPemilik;
+use App\Http\Controllers\Dokter\RekamMedisController as DokterRekamMedis;
 use App\Http\Controllers\Resepsionis\PetController as ResepsionisPetController;
 use App\Http\Controllers\Resepsionis\PemilikController as ResepsionisPemilikController;
 use App\Http\Controllers\Resepsionis\RekamMedisController as ResepsionisRekamMedisController;
@@ -34,13 +36,13 @@ Route::prefix('resepsionis')->middleware(['auth', 'isResepsionis'])->group(funct
 });
 
 // Halaman umum
-Route::get('/', [HomeController::class, 'home'])->name('home');
-Route::get('/CekKoneksi', [HomeController::class, 'CekKoneksi'])->name('CekKoneksi');
-Route::get('/struktur', [HomeController::class, 'struktur'])->name('struktur');
-Route::get('/layanan', [HomeController::class, 'layanan'])->name('layanan');
-Route::get('/visi', [HomeController::class, 'visi'])->name('visi');
-Route::get('/login', [HomeController::class, 'login'])->name('login');
-Route::post('/login', [HomeController::class, 'loginProcess'])->name('login.process');
+Route::get('/', [MineController::class, 'home'])->name('home');
+Route::get('/CekKoneksi', [MineController::class, 'CekKoneksi'])->name('CekKoneksi');
+Route::get('/struktur', [MineController::class, 'struktur'])->name('struktur');
+Route::get('/layanan', [MineController::class, 'layanan'])->name('layanan');
+Route::get('/visi', [MineController::class, 'visi'])->name('visi');
+Route::get('/login', [MineController::class, 'login'])->name('login');
+Route::post('/login', [MineController::class, 'loginProcess'])->name('login.process');
 
 
 Auth::routes();
@@ -78,6 +80,14 @@ Route::middleware('isAdministrator')->group(function () {
 
         // Kode Tindakan Terapi - CRUD Lengkap
         Route::resource('kodetindakanterapi', KodeTindakanTerapiController::class);
+        Route::resource('role', RoleController::class);
+        Route::resource('user', UserController::class);
+
+        Route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
+Route::get('user/{id}/edit-password', [UserController::class, 'editPassword'])->name('user.edit-password');
+Route::put('user/{id}/update-password', [UserController::class, 'updatePassword'])->name('update-password');
+Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         
         // Routes lainnya
         Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
@@ -189,3 +199,9 @@ Route::middleware('isResepsionis')->prefix('resepsionis')->name('resepsionis.')-
         'destroy' => 'transaksi.destroy',
     ]);
 });
+
+    // ADMIN ROUTES
+Route::middleware('isPemilik')->prefix('pemilik')->name('pemilik.')->group(function () {
+     Route::get('/dashboard', [DashboardPemilikController::class, 'index'])->name('dashboard');
+});
+

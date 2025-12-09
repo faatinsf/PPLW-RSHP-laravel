@@ -6,8 +6,10 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="fw-bold text-primary"><i class="bi bi-people"></i> Data User</h3>
     <button class="btn btn-primary shadow-sm">
+        
+      <a href="{{ route('user.create') }}" class="btn btn-primary shadow-sm" title="Tambah User">
         <i class="bi bi-plus-lg"></i> Tambah User
-    </button>
+    </a>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">
@@ -39,13 +41,26 @@
                                 <span class="text-muted">Belum ada role</span>
                             @endif
                         </td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                           <td class="text-center">
+                            <div class="btn-group" user="group">
+                                <a href="{{ route('user.edit', $user->iduser) }}" 
+                                   class="btn btn-sm btn-warning" 
+                                   title="Edit User">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form action="{{ route('user.destroy', $user->iduser) }}" 
+                                      method="POST" 
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin ingin menghapus user {{ $user->nama_user }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-danger" 
+                                            title="Hapus User">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty

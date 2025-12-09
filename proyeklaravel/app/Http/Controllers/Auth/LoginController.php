@@ -81,6 +81,7 @@ class LoginController extends Controller
             ->withErrors(['password' => 'Password salah.'])
             ->withInput();
     }
+    
 
     $namaRole = Role::where('idrole', $user->roleUser[0]->idrole ?? null)->first();
 
@@ -99,7 +100,7 @@ class LoginController extends Controller
 
 
     $userRole = $user->roleUser[0]->idrole ?? null;
-    // dd($userRole);
+
     switch ($userRole) {
         case '1':
             return redirect()->route('admin.dashboard')->with('success', 'Login berhasil!');
@@ -109,7 +110,7 @@ class LoginController extends Controller
             return redirect()->route('perawat.dashboard')->with('success', 'Login berhasil!');
         case '4':
             return redirect()->route('resepsionis.dashboard')->with('success', 'Login berhasil!');
-        default:
+        case '5':
             return redirect()->route('pemilik.dashboard')->with('success', 'Login berhasil!');
     }
 }

@@ -6,11 +6,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Edit Role</h3>
+                    <h3 class="card-title">Tambah Role Baru</h3>
                 </div>
-                <form action="{{ route('role.update', $role->idrole) }}" method="POST">
+                <form action="{{ route('role.store') }}" method="POST">
                     @csrf
-                    @method('PUT')
                     <div class="card-body">
                         <div class="form-group">
                             <label for="nama_role">Nama Role <span class="text-danger">*</span></label>
@@ -18,7 +17,7 @@
                                    class="form-control @error('nama_role') is-invalid @enderror" 
                                    id="nama_role" 
                                    name="nama_role" 
-                                   value="{{ old('nama_role', $role->nama_role) }}"
+                                   value="{{ old('nama_role') }}"
                                    placeholder="Masukkan nama role"
                                    required>
                             @error('nama_role')
@@ -26,12 +25,12 @@
                             @enderror
                         </div>
 
-                       
+                      
                     </div>
 
                     <div class="card-footer">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Update
+                            <i class="fas fa-save"></i> Simpan
                         </button>
                         <a href="{{ route('role.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Kembali
