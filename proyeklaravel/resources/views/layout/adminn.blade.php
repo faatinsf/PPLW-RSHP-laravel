@@ -156,7 +156,7 @@
         <a href="{{ route('kodetindakanterapi.index') }}">⚕️ Tindakan Terapi</a>
 
         <hr>
-        <a href="{{ route('login') }}">🚪 Logout</a>
+        <a href="{{ route('logout') }}">🚪 Logout</a>
     </div>
 
     {{-- KONTEN --}}

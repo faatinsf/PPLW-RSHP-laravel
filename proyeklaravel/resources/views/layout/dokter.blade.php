@@ -74,6 +74,12 @@
                    <i class="bi bi-file-medical"></i> Rekam Medis
                </a>
             </li>
+             <li>
+                <a href="{{ route('dokter.profile') }}"
+                   class="{{ request()->routeIs('dokter.profile') ? 'active' : '' }}">
+                    <i class="bi bi-people"></i> Profile
+                </a>
+            </li>
         </ul>
 
         <div class="sidebar-divider my-3"></div>

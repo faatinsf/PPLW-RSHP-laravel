@@ -9,15 +9,25 @@ use Illuminate\Support\Facades\Auth;
 
 class isDokter
 {
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
 
- 
+        // Jika user tidak terautentikasi, redirect ke login
+        if (!Auth::check()) {
+
+            return redirect()->route('login');
+        }
+
         // Ambil role dari session atau dari relasi user
         $userRole = session('user_role');
 
         // Jika user terautentikasi tapi role  1, return 403
-        if ($userRole === 2) {
+        if ($userRole == 2) {
 
             return $next($request);
         } else {

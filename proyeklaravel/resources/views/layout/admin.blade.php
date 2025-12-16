@@ -422,12 +422,16 @@
             <hr>
 
             <ul class="sidebar-nav">
-                <li class="nav-item">
-                    <a href="{{ route('login') }}" class="nav-link text-danger">
-                        <span class="nav-icon">🚪</span>
-                        <span>Logout</span>
-                    </a>
-                </li>
+            <li class="nav-item">
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="nav-link text-danger w-100 text-start border-0 bg-transparent">
+            <span class="nav-icon">🚪</span>
+            <span>Logout</span>
+        </button>
+    </form>
+</li>
+
             </ul>
         </nav>
     </aside>

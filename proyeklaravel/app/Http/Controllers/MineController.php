@@ -9,7 +9,7 @@ use App\Http\Controllers\MineController;
 
 Class MineController extends Controller
 {
-public function home(){
+    public function home(){
         return view('home');
     }
 
@@ -24,6 +24,6 @@ public function home(){
     }
 
     public function login(){
-        return view('login');
+        return view('auth.login');
     }
 }

@@ -17,6 +17,12 @@ class isPemilik
     public function handle(Request $request, Closure $next): Response
     {
 
+         // Jika user tidak terautentikasi, redirect ke login
+        if (!Auth::check()) {
+            
+            return redirect()->route('login');
+        }
+
         $userRole = session('user_role');
 
         // Hanya role 5 (pemilik) yang boleh masuk

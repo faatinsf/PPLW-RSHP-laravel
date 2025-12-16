@@ -12,6 +12,8 @@ class User extends Authenticatable
 
     protected $table = 'user'; // pastikan nama tabel benar
     protected $fillable = ['name', 'email', 'password'];
+    protected $primaryKey = 'iduser';
+    public $timestamps = false;
 
 
     public function roleUser()

@@ -14,12 +14,16 @@ class isResepsionis
     public function handle(Request $request, Closure $next): Response
     {
 
- 
+         // Jika user tidak terautentikasi, redirect ke login
+        if (!Auth::check()) {
+            
+            return redirect()->route('login');
+        }
         // Ambil role dari session atau dari relasi user
         $userRole = session('user_role');
 
         // Jika user terautentikasi tapi role  1, return 403
-        if ($userRole === 4) {
+        if ($userRole == 4) {
 
             return $next($request);
         } else {

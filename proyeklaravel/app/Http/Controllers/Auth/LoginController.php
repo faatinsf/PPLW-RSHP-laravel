@@ -2,28 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
-
+use App\Models\RoleUser;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
+
 
     use AuthenticatesUsers;
 
@@ -32,16 +24,22 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
+
+    //protected function redirectTo()
+    //{
+        //return '/'; // default kosong aja, biar nggak /home
+    //}
+
+
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
 
@@ -50,23 +48,21 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-   public function login(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'email' => 'required|email',
-        'password' => 'required|min:6',
-    ]);
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+        ]);
 
-    if ($validator->fails()) {
-        return redirect()->back()
+        if ($validator->fails()) {
+            return redirect()->back()
             ->withErrors($validator)
             ->withInput();
-    }
+        }
 
-    $user = User::with(['roleUser' => function($query) {
-        $query->where('status', 1);
-    }, 'roleUser.role'])
-        ->where('email', $request->input('email'))
+        $user = User::with(['roleUser.role'])
+        ->where('email', $request->email)
         ->first();
 
     if (!$user) {
@@ -81,22 +77,21 @@ class LoginController extends Controller
             ->withErrors(['password' => 'Password salah.'])
             ->withInput();
     }
-    
 
     $namaRole = Role::where('idrole', $user->roleUser[0]->idrole ?? null)->first();
 
     // Login user ke session
     Auth::login($user);
-
+    
     // Simpan session user
-   $request->session()->put([
-    'user_id' => $user->iduser,
-    'user_name' => $user->nama,
-    'user_email' => $user->email,
-    'user_role' => (int)($user->roleUser[0]->idrole ?? 0),
-    'user_role_name' => $namaRole->nama_role ?? 'user',
-    'user_status' => $user->roleUser[0]->status ?? 'active'
-]);
+    $request->session()->put([
+        'user_id' => $user->iduser,
+        'user_name' => $user->nama,
+        'user_email' => $user->email,
+        'user_role' => $user->roleUser[0]->idrole ?? 'user',
+        'user_role_name' => $namaRole->nama_role ?? 'User',
+        'user_status' => $user->roleUser[0]->status ?? 'active',
+    ]);
 
 
     $userRole = $user->roleUser[0]->idrole ?? null;
@@ -113,6 +108,18 @@ class LoginController extends Controller
         case '5':
             return redirect()->route('pemilik.dashboard')->with('success', 'Login berhasil!');
     }
-}
-}
+    }
 
+    public function logout(Request $request)
+    {
+
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/')
+        ->with('success', 'Logout berhasil!');
+    }
+
+}
